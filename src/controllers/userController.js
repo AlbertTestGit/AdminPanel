@@ -17,14 +17,14 @@ class UserController {
             return res.status(404).send('Not found');
         }
 
-        res.send('Get One User');
+        res.send(user);
     }
 
     async create(req, res) {
         const { name, email, licenseNumber, role, password } = req.body;
 
         if (await User.findOne({ where: { email } })) {
-            res.status(400).send('Bad reques');
+            return res.status(400).send('Bad request');
         }
 
         const user = await User.create({
@@ -39,10 +39,45 @@ class UserController {
     }
 
     async update(req, res) {
-        res.send('Update User');
+        const { id, name, email, licenseNumber, role, password } = req.body;
+        
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(400).send('Bad request');
+        }
+
+        if (name != undefined) user.name = name;
+
+        if (email != undefined) {
+            if (await User.findOne({ where: { email } })) return res.status(400).send('Bad request');
+
+            user.email = email;
+        }
+
+        if (licenseNumber != undefined) user.licenseNumber = licenseNumber;
+
+        if (role != undefined) user.role = role;
+
+        if (password != undefined) bcrypt.hashSync(password, 10);
+
+
+        await user.save();
+
+        res.send(user);
     }
 
     async delete(req, res) {
+        const userId = req.params.userId;
+
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).send('Not found');
+        }
+
+        await user.destroy();
+
         res.send('Delete User');
     }
 }
