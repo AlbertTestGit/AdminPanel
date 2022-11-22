@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs';
 import { User } from '../db.js';
+import userService from '../services/userService.js';
 
 class UserController {
     async getAll(req, res) {
-        const users = await User.findAll();
+        const users = await userService.getAll();
 
         res.send(users);
     }
@@ -11,7 +12,7 @@ class UserController {
     async getOne(req, res) {
         const userId = req.params.userId;
 
-        const user = await User.findByPk(userId);
+        const user = await userService.getById(userId);
 
         if (!user) {
             return res.status(404).send('Not found');
@@ -23,19 +24,13 @@ class UserController {
     async create(req, res) {
         const { name, email, licenseNumber, role, password } = req.body;
 
-        if (await User.findOne({ where: { email } })) {
+        if (await userService.getByEmail(email)) {
             return res.status(400).send('Bad request');
         }
 
-        const user = await User.create({
-            name,
-            email,
-            licenseNumber,
-            role,
-            password: bcrypt.hashSync(password, 10)
-        })
-
-        res.send(user);
+        const passwordHash = bcrypt.hashSync(password, 10);
+        
+        res.send(await userService.create(name, email, licenseNumber, role, passwordHash));
     }
 
     async update(req, res) {

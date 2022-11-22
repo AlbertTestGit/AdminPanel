@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import { sequelize } from './db.js';
+import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
 
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
 
