@@ -25,7 +25,7 @@ class UserController {
     async create(req, res) {
 
         if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
-            return res.status(403).json({ message: 'Forbiden' });
+            return res.status(403).json({ message: 'Forbidden' });
         }
 
         const { name, email, licenseNumber, role, password } = req.body;
@@ -41,9 +41,9 @@ class UserController {
 
     async update(req, res) {
         if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
-            return res.status(403).json({ message: 'Forbiden' });
+            return res.status(403).json({ message: 'Forbidden' });
         }
-        
+
         const { id, name, email, licenseNumber, role, password } = req.body;
         
         const user = await User.findByPk(id);
@@ -74,7 +74,7 @@ class UserController {
 
     async delete(req, res) {
         if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
-            return res.status(403).json({ message: 'Forbiden' });
+            return res.status(403).json({ message: 'Forbidden' });
         }
 
         const userId = req.params.userId;
