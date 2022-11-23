@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { User } from '../db.js';
+import { roles } from '../models/user.js';
 import userService from '../services/userService.js';
 
 class UserController {
@@ -22,6 +23,11 @@ class UserController {
     }
 
     async create(req, res) {
+
+        if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
+            return res.status(403).json({ message: 'Forbiden' });
+        }
+
         const { name, email, licenseNumber, role, password } = req.body;
 
         if (await userService.getByEmail(email)) {
@@ -34,6 +40,10 @@ class UserController {
     }
 
     async update(req, res) {
+        if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
+            return res.status(403).json({ message: 'Forbiden' });
+        }
+        
         const { id, name, email, licenseNumber, role, password } = req.body;
         
         const user = await User.findByPk(id);
@@ -63,6 +73,10 @@ class UserController {
     }
 
     async delete(req, res) {
+        if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
+            return res.status(403).json({ message: 'Forbiden' });
+        }
+
         const userId = req.params.userId;
 
         const user = await User.findByPk(userId);
