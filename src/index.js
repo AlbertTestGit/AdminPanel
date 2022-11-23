@@ -2,7 +2,9 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import { sequelize } from './db.js';
+import bcrypt from 'bcryptjs';
+import { sequelize, User } from './db.js';
+import { roles } from './models/user.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
 
@@ -19,6 +21,19 @@ app.use('/api/users', userRouter);
 const start = async () => {
     try {
         await sequelize.sync({ force: true });
+
+        const adminEmail = process.env.ADMIN_EMAIL;
+        const adminPassword = process.env.ADMIN_PASSWORD;
+
+        await User.create({
+            name: "Admin",
+            email: adminEmail,
+            licenseNumber: "111",
+            role: roles.Administrator,
+            password: bcrypt.hashSync(adminPassword, 10)
+        });
+        
+        console.log('\x1b[36m%s\x1b[0m', `\nAdmin user created. Email: ${adminEmail}, Password: ${adminPassword}\n`);
 
         app.listen(3000, () => console.log(`Example app listening on port ${PORT}`));
     } catch (error) {
