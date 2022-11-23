@@ -43,8 +43,15 @@ class AuthController {
             role: user.role
         }
 
-        const token = jwt.sign( payload, "secret");
-        res.send(`Login completed successfully. Token: ${token}`);
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '24h'
+            }
+        );
+
+        return res.json({ accessTpken: token });
     }
 }
 
