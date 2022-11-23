@@ -40,11 +40,13 @@ class UserController {
     }
 
     async update(req, res) {
-        if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
+        const isAdministratorOrOperator = req.user.role === roles.Administrator || req.user.role === roles.Operator;
 
         const { id, name, email, licenseNumber, role, password } = req.body;
+
+        if (!isAdministratorOrOperator || req.user.id !== id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
         
         const user = await User.findByPk(id);
 
