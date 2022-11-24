@@ -7,20 +7,27 @@ import { sequelize, User } from './db.js';
 import { roles } from './models/user.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
+import path from 'path';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 // Middlewares
 app.use(express.json());
+app.use(express.static('src/demoapp/dist/demoapp'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
 
+app.get('*', function(req,res) {
+    res.sendFile(path.resolve('src/demoapp/dist/demoapp/index.html'));
+});
+
+
 const start = async () => {
     try {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
 
         const adminEmail = process.env.ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
