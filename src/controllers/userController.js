@@ -44,7 +44,10 @@ class UserController {
 
         const { id, name, email, licenseNumber, role, password } = req.body;
 
-        if (!isAdministratorOrOperator || req.user.id !== id) {
+        console.log('\x1b[33m%s\x1b[0m', isAdministratorOrOperator);
+        console.log('\x1b[33m%s\x1b[0m', req.user);
+        console.log('\x1b[33m%s\x1b[0m', id);
+        if (isAdministratorOrOperator || req.user.id !== id) {
             return res.status(403).json({ message: 'Forbidden' });
         }
         
@@ -66,7 +69,7 @@ class UserController {
 
         if (role != undefined) user.role = role;
 
-        if (password != undefined) bcrypt.hashSync(password, 10);
+        if (password != undefined) user.password = bcrypt.hashSync(password, 10);
 
 
         await user.save();

@@ -20,20 +20,22 @@ app.use('/api/users', userRouter);
 
 const start = async () => {
     try {
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
 
         const adminEmail = process.env.ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
 
-        await User.create({
-            name: "Admin",
-            email: adminEmail,
-            licenseNumber: "111",
-            role: roles.Administrator,
-            password: bcrypt.hashSync(adminPassword, 10)
-        });
-        
-        console.log('\x1b[36m%s\x1b[0m', `\nAdmin user created. Email: ${adminEmail}, Password: ${adminPassword}\n`);
+        if (await User.findAll().length == 0) {
+            await User.create({
+                name: "Admin",
+                email: adminEmail,
+                licenseNumber: "111",
+                role: roles.Administrator,
+                password: bcrypt.hashSync(adminPassword, 10)
+            });
+
+            console.log('\x1b[36m%s\x1b[0m', `\nAdmin user created. Email: ${adminEmail}, Password: ${adminPassword}\n`);
+        }
 
         app.listen(3000, () => console.log(`Example app listening on port ${PORT}`));
     } catch (error) {

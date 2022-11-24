@@ -3,6 +3,7 @@ import generator from 'generate-password';
 import jwt from 'jsonwebtoken';
 import { roles } from '../models/user.js';
 import userService from '../services/userService.js';
+import mailerService from '../services/mailerService.js';
 
 class AuthController {
     async registration(req, res) {
@@ -23,6 +24,8 @@ class AuthController {
 
         await userService.create(name, email, licenseNumber, roles.SubsoilUser, passwordHash);
 
+        await mailerService.sendOTP(name, email, password);
+
         res.send(`Registration completed successfully. Password: ${password}`);
     }
 
@@ -36,7 +39,7 @@ class AuthController {
         }
 
         const payload = {
-            sub: user.id,
+            id: user.id,
             name: user.name,
             email: user.email,
             licenseNumber: user.licenseNumber,
