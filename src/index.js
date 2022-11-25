@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import { sequelize, User } from './db.js';
 import { roles } from './models/user.js';
@@ -15,6 +16,10 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(express.static('src/demoapp/dist/demoapp'));
+
+app.use(cors({
+    origin: '*'
+}));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
@@ -32,7 +37,7 @@ const start = async () => {
         const adminEmail = process.env.ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
 
-        if (await User.findAll().length == 0) {
+        if ((await User.findAll() ).length == 0) {
             await User.create({
                 name: "Admin",
                 email: adminEmail,

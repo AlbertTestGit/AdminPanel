@@ -23,8 +23,9 @@ class UserController {
     }
 
     async create(req, res) {
+        const isAdministratorOrOperator = req.user.role === roles.Administrator || req.user.role === roles.Operator;
 
-        if (req.user.role !== roles.Administrator || req.user.role !== roles.Operator) {
+        if (!isAdministratorOrOperator) {
             return res.status(403).json({ message: 'Forbidden' });
         }
 

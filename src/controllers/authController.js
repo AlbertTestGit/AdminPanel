@@ -54,7 +54,7 @@ class AuthController {
             }
         );
 
-        return res.json({ accessTpken: token });
+        return res.json({ accessToken: token });
     }
 }
 
