@@ -3,7 +3,7 @@ import userModel from './models/user.js';
 
 export const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'app.db'
+    storage: process.env.SQLITE_STORAGE
 });
 
 export const User = userModel(sequelize);
