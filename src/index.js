@@ -8,6 +8,7 @@ import { sequelize, User } from './db.js';
 import { roles } from './models/user.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
+import pluginRouter from './routers/pluginRouter.js';
 import path from 'path';
 
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.use(cors({
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/plugins', pluginRouter);
 
 
 app.get('*', function(req,res) {
