@@ -37,7 +37,6 @@ export const pluginModel = (sequelize) => {
         },
         developerKey: {
             type: DataTypes.STRING,
-            allowNull: false,
         },
         petrelVersion: {
             type: DataTypes.STRING,
